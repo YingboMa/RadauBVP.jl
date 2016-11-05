@@ -2,6 +2,7 @@ __precompile__()
 module RadauBVP
 
 using NLsolve
+import Optim
 export radau3
 
 """
@@ -174,7 +175,7 @@ function radau3(c!, f!, dc!, df!, y0 :: Array{Float64, 2}, t0 :: Float64, tf :: 
 	end
 	x0 = Array(eltype(y0), length(y0))
     x0[:] = y0
-    result = nlsolve(eq!, deq!, x0)
+    result = nlsolve(eq!, deq!, x0, method = :newton, linesearch! = Optim.backtracking_linesearch!)
 	# total time points (including all collocation points)
 	t_tot = zeros(Float64, 3*(N-1)+1)
 	y_tot = zeros(Float64, (M, length(t_tot)))
